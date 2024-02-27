@@ -6,6 +6,7 @@ import ListItemText from "@mui/material/ListItemText";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import FolderOpenOutlinedIcon from "@mui/icons-material/FolderOpenOutlined";
+import WorkIcon from '@mui/icons-material/Work';
 
 const AsideListItem = (props) => {
   let iconToRender;
@@ -19,6 +20,9 @@ const AsideListItem = (props) => {
       break;
     case "Browse":
       iconToRender = <FolderOpenOutlinedIcon />;
+      break;
+    case "Workspaces":
+      iconToRender = <WorkIcon />;
       break;
     default:
       iconToRender = <HomeOutlinedIcon />;
