@@ -7,13 +7,13 @@ const initialState = {
   currentTab: 0,
   currentSelectorTab: 0,
   currentColumn: {
-    source: '',
-    column: '',
+    source: "",
+    column: "",
     data: {
-      type: '',
+      type: "",
       isList: false,
-      value: ''
-    }
+      value: "",
+    },
   },
   calcApply: false,
   parameters: [],
@@ -21,23 +21,23 @@ const initialState = {
   codeSQLForUnion: "",
   edited: false,
   isUnique: false,
-  uniqueTable: '',
+  uniqueTable: "",
   funcIndex: 1,
-  codeViewSQL: ""
+  codeViewSQL: "",
+  currentAsideItem: "Data",
 };
 
 export const utilitySlice = createSlice({
-  name: 'utility',
+  name: "utility",
   initialState,
   reducers: {
-
-    setAllUtility:(state, action) => {
+    setAllUtility: (state, action) => {
       return {
         ...state,
-        ...action.payload
-      }
+        ...action.payload,
+      };
     },
-    initAllUtility:(state, action) => {
+    initAllUtility: (state, action) => {
       return {
         ...state,
         treeOpened: true,
@@ -46,22 +46,22 @@ export const utilitySlice = createSlice({
         currentTab: 0,
         currentSelectorTab: 0,
         currentColumn: {
-          source: '',
-          column: '',
+          source: "",
+          column: "",
           data: {
-            type: '',
+            type: "",
             isList: false,
-            value: ''
-          }
+            value: "",
+          },
         },
         calcApply: false,
         parameters: [],
         codeSQL: "",
         edited: false,
         isUnique: false,
-        uniqueTable: '',
+        uniqueTable: "",
         funcIndex: 1,
-      }
+      };
     },
     setTreeOpened: (state, action) => {
       state.treeOpened = action.payload;
@@ -73,12 +73,12 @@ export const utilitySlice = createSlice({
       state.sheetOpened = action.payload;
     },
     setCurTab: (state, action) => {
-      state.currentTab = action.payload
+      state.currentTab = action.payload;
     },
     setCurSelectorTab: (state, action) => {
-      state.currentSelectorTab = action.payload
+      state.currentSelectorTab = action.payload;
     },
-      
+
     setCurColumn: (state, action) => {
       state.currentColumn = action.payload.currentColumn;
     },
@@ -97,23 +97,23 @@ export const utilitySlice = createSlice({
     setCodeViewSQL: (state, action) => {
       state.codeViewSQL = action.payload;
     },
-    setCalcApply: (state,action) => {
+    setCalcApply: (state, action) => {
       state.calcApply = action.payload;
     },
     editParameter: (state, action) => {
-      const {name, value} = action.payload;
-      const newState = state.parameters.map(item => {
-        if(item.name === name)
+      const { name, value } = action.payload;
+      const newState = state.parameters.map((item) => {
+        if (item.name === name)
           return {
             name: item.name,
             type: item.type,
             isList: item.isList,
             default: item.default,
             value: value,
-            list: item.list
-          }
+            list: item.list,
+          };
         else return item;
-      })
+      });
       state.parameters = newState;
     },
     setIsUnique: (state, action) => {
@@ -121,19 +121,23 @@ export const utilitySlice = createSlice({
     },
     setUniqueTable: (state, action) => {
       state.uniqueTable = action.payload;
-    }
+    },
+
+    setCurrentAsideItem: (state, action) => {
+      state.currentAsideItem = action.payload;
+    },
   },
-})
+});
 
 export const {
   setCurSelectorTab,
-  setTreeOpened, 
-  setSheetOpened, 
-  setCurTab, 
-  setCurColumn, 
-  createNewParameter, 
-  setCrossTab, 
-  setCodeSQL, 
+  setTreeOpened,
+  setSheetOpened,
+  setCurTab,
+  setCurColumn,
+  createNewParameter,
+  setCrossTab,
+  setCodeSQL,
   setEdited,
   editParameter,
   setIsUnique,
@@ -143,6 +147,7 @@ export const {
   initAllUtility,
   setAllUtility,
   setCodeViewSQL,
-  setCalcApply
+  setCalcApply,
+  setCurrentAsideItem
 } = utilitySlice.actions;
 export default utilitySlice.reducer;

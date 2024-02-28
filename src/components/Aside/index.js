@@ -90,7 +90,10 @@ const Aside = () => {
       </List>
       <Divider />
       <List>
-        {["Home", "Browse", "Workspaces"].map((text, index) => (
+        {/* {["Home", "Browse", "Workspaces"].map((text, index) => (
+          <AsideListItem text={text} />
+        ))} */}
+        {["Home", "Data", "Report", "Files"].map((text, index) => (
           <AsideListItem text={text} />
         ))}
       </List>

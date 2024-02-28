@@ -14,20 +14,19 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import MuiDrawer from "@mui/material/Drawer";
 
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+// import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
-import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 // import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { TreeView } from "@mui/x-tree-view/TreeView";
 import { TreeItem, treeItemClasses } from "@mui/x-tree-view/TreeItem";
 
-
-import FolderOpenIcon from '@mui/icons-material/FolderOpen';
-import GridOnIcon from '@mui/icons-material/GridOn';
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+import GridOnIcon from "@mui/icons-material/GridOn";
 const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
@@ -95,11 +94,6 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-
-
-
-
-
 const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
   color: theme.palette.text.secondary,
   [`& .${treeItemClasses.content}`]: {
@@ -108,19 +102,19 @@ const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
     borderBottomRightRadius: theme.spacing(2),
     paddingRight: theme.spacing(1),
     fontWeight: theme.typography.fontWeightMedium,
-    '&.Mui-expanded': {
+    "&.Mui-expanded": {
       fontWeight: theme.typography.fontWeightRegular,
     },
-    '&:hover': {
+    "&:hover": {
       backgroundColor: theme.palette.action.hover,
     },
-    '&.Mui-focused, &.Mui-selected, &.Mui-selected.Mui-focused': {
+    "&.Mui-focused, &.Mui-selected, &.Mui-selected.Mui-focused": {
       backgroundColor: `var(--tree-view-bg-color, ${theme.palette.action.selected})`,
-      color: 'var(--tree-view-color)',
+      color: "var(--tree-view-color)",
     },
     [`& .${treeItemClasses.label}`]: {
-      fontWeight: 'inherit',
-      color: 'inherit',
+      fontWeight: "inherit",
+      color: "inherit",
     },
   },
   [`& .${treeItemClasses.group}`]: {
@@ -145,9 +139,10 @@ const StyledTreeItem = React.forwardRef(function StyledTreeItem(props, ref) {
   } = props;
 
   const styleProps = {
-    '--tree-view-color': theme.palette.mode !== 'dark' ? color : colorForDarkMode,
-    '--tree-view-bg-color':
-      theme.palette.mode !== 'dark' ? bgColor : bgColorForDarkMode,
+    "--tree-view-color":
+      theme.palette.mode !== "dark" ? color : colorForDarkMode,
+    "--tree-view-bg-color":
+      theme.palette.mode !== "dark" ? bgColor : bgColorForDarkMode,
   };
 
   return (
@@ -155,14 +150,17 @@ const StyledTreeItem = React.forwardRef(function StyledTreeItem(props, ref) {
       label={
         <Box
           sx={{
-            display: 'flex',
-            alignItems: 'center',
+            display: "flex",
+            alignItems: "center",
             p: 0.5,
             pr: 0,
           }}
         >
           <Box component={LabelIcon} color="inherit" sx={{ mr: 1 }} />
-          <Typography variant="body2" sx={{ fontWeight: 'inherit', flexGrow: 1 }}>
+          <Typography
+            variant="body2"
+            sx={{ fontWeight: "inherit", flexGrow: 1 }}
+          >
             {labelText}
           </Typography>
           <Typography variant="caption" color="inherit">
@@ -177,17 +175,9 @@ const StyledTreeItem = React.forwardRef(function StyledTreeItem(props, ref) {
   );
 });
 
-
-
-
-
-
-
-
-
 const App = () => {
   // const classes = useStyle();
-  const theme = useTheme();
+  // const theme = useTheme();
   const [tabValue, setTabValue] = React.useState(0);
 
   const [open, setOpen] = React.useState(true);
@@ -196,9 +186,9 @@ const App = () => {
     setOpen(!open);
   };
 
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+  // const handleDrawerClose = () => {
+  //   setOpen(false);
+  // };
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -216,20 +206,23 @@ const App = () => {
       </AppBar>
       <Aside />
       <Box component="main" sx={{ flexGrow: 1, mt: "55px" }}>
-        <Tabs
-          value={tabValue}
-          onChange={handleTabChange}
-          variant="scrollable"
-          scrollButtons="auto"
-          aria-label="scrollable auto tabs example"
-        >
-          <Tab label="Report" style={{ fontWeight: 700 }} />
-          <Tab label="SQL Generator" style={{ fontWeight: 700 }} />
-          <Tab label="Cube Builder" style={{ fontWeight: 700 }} />
-          <Tab label="Table Builder" style={{ fontWeight: 700 }} />
-        </Tabs>
-        <CommonTools />
-        <Box sx={{display:'flex'}}>
+        <Box>
+          <Tabs
+            value={tabValue}
+            onChange={handleTabChange}
+            variant="scrollable"
+            scrollButtons="auto"
+            aria-label="scrollable auto tabs example"
+          >
+            <Tab label="Report" style={{ fontWeight: 700 }} />
+            <Tab label="SQL Generator" style={{ fontWeight: 700 }} />
+            <Tab label="Cube Builder" style={{ fontWeight: 700 }} />
+            <Tab label="Table Builder" style={{ fontWeight: 700 }} />
+          </Tabs>
+          <CommonTools />
+        </Box>
+
+        <Box sx={{ display: "flex" }}>
           <Drawer
             variant="permanent"
             open={open}
@@ -237,7 +230,11 @@ const App = () => {
           >
             <DrawerHeader>
               <IconButton onClick={handleDrawerOpen}>
-                {!open ? <KeyboardDoubleArrowRightIcon /> : <KeyboardDoubleArrowLeftIcon />}
+                {!open ? (
+                  <KeyboardDoubleArrowRightIcon />
+                ) : (
+                  <KeyboardDoubleArrowLeftIcon />
+                )}
               </IconButton>
             </DrawerHeader>
             {open ? (
@@ -246,13 +243,37 @@ const App = () => {
                 defaultCollapseIcon={<ExpandMoreIcon />}
                 defaultExpandIcon={<ChevronRightIcon />}
               >
-                <StyledTreeItem nodeId="1" labelText="Folders" labelIcon={FolderOpenIcon}>
-                  <StyledTreeItem nodeId="2" labelText="table" labelIcon={GridOnIcon}/>
+                <StyledTreeItem
+                  nodeId="1"
+                  labelText="Folders"
+                  labelIcon={FolderOpenIcon}
+                >
+                  <StyledTreeItem
+                    nodeId="2"
+                    labelText="table"
+                    labelIcon={GridOnIcon}
+                  />
                 </StyledTreeItem>
-                <StyledTreeItem nodeId="5" labelText="Folders" labelIcon={FolderOpenIcon}>
-                  <StyledTreeItem nodeId="10" labelText="table" labelIcon={GridOnIcon}/>
-                  <StyledTreeItem nodeId="6" labelText="Folders" labelIcon={FolderOpenIcon}>
-                    <StyledTreeItem nodeId="8" labelText="table" labelIcon={GridOnIcon} />
+                <StyledTreeItem
+                  nodeId="5"
+                  labelText="Folders"
+                  labelIcon={FolderOpenIcon}
+                >
+                  <StyledTreeItem
+                    nodeId="10"
+                    labelText="table"
+                    labelIcon={GridOnIcon}
+                  />
+                  <StyledTreeItem
+                    nodeId="6"
+                    labelText="Folders"
+                    labelIcon={FolderOpenIcon}
+                  >
+                    <StyledTreeItem
+                      nodeId="8"
+                      labelText="table"
+                      labelIcon={GridOnIcon}
+                    />
                   </StyledTreeItem>
                 </StyledTreeItem>
               </TreeView>
