@@ -1,40 +1,27 @@
 import * as React from "react";
 import { styled, useTheme } from "@mui/material/styles";
-
-import { useSelector, useDispatch } from "react-redux";
-
 import Box from "@mui/material/Box";
-import MuiAppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import CssBaseline from "@mui/material/CssBaseline";
-import Typography from "@mui/material/Typography";
 
-import Data from "./components/Data"
-import Report from "./components/Report";
-import Aside from "./components/Aside";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+
 import MuiDrawer from "@mui/material/Drawer";
 
+// import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
+
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+// import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { TreeView } from "@mui/x-tree-view/TreeView";
 import { TreeItem, treeItemClasses } from "@mui/x-tree-view/TreeItem";
 
-const drawerWidth = 240;
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+import GridOnIcon from "@mui/icons-material/GridOn";
 
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(["width", "margin"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
+const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -164,43 +151,78 @@ const StyledTreeItem = React.forwardRef(function StyledTreeItem(props, ref) {
   );
 });
 
-const App = () => {
-  // const classes = useStyle();
-  // const theme = useTheme();
-  const currentAsideItem = useSelector(state => state.utility.currentAsideItem)
+const WorkTree = () => {
+  const [open, setOpen] = React.useState(true);
+  const [tabValue, setTabValue] = React.useState(0);
 
-  let workSpace;
-  switch(currentAsideItem) {
-    case "Data":
-      workSpace = <Data />;
-      break;
-    case "Report":
-      workSpace = <Report />;
-      break;
-    default:
-      workSpace = <div></div>;
-      break;
-  }
+  const handleDrawerOpen = () => {
+    setOpen(!open);
+  };
+
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      <AppBar position="fixed">
-        <Toolbar>
-          <Typography variant="h6" noWrap component="div">
-            Data Cube
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Aside />
-      <Box component="main" sx={{ flexGrow: 1, mt: "55px" }}>
-        {workSpace}
-        <Box>
-          
-        </Box>
-      </Box>
-    </Box>
+    <Drawer
+      variant="permanent"
+      open={open}
+      PaperProps={{ style: { position: "relative" } }}
+    >
+      <DrawerHeader>
+        <IconButton onClick={handleDrawerOpen}>
+          {!open ? (
+            <KeyboardDoubleArrowRightIcon />
+          ) : (
+            <KeyboardDoubleArrowLeftIcon />
+          )}
+        </IconButton>
+      </DrawerHeader>
+      {open ? (
+        <TreeView
+          aria-label="file system navigator"
+          defaultCollapseIcon={<ExpandMoreIcon />}
+          defaultExpandIcon={<ChevronRightIcon />}
+        >
+          <StyledTreeItem
+            nodeId="1"
+            labelText="Folders"
+            labelIcon={FolderOpenIcon}
+          >
+            <StyledTreeItem
+              nodeId="2"
+              labelText="table"
+              labelIcon={GridOnIcon}
+            />
+          </StyledTreeItem>
+          <StyledTreeItem
+            nodeId="5"
+            labelText="Folders"
+            labelIcon={FolderOpenIcon}
+          >
+            <StyledTreeItem
+              nodeId="10"
+              labelText="table"
+              labelIcon={GridOnIcon}
+            />
+            <StyledTreeItem
+              nodeId="6"
+              labelText="Folders"
+              labelIcon={FolderOpenIcon}
+            >
+              <StyledTreeItem
+                nodeId="8"
+                labelText="table"
+                labelIcon={GridOnIcon}
+              />
+            </StyledTreeItem>
+          </StyledTreeItem>
+        </TreeView>
+      ) : (
+        <div></div>
+      )}
+    </Drawer>
   );
 };
 
-export default App;
+export default WorkTree;
