@@ -15,6 +15,7 @@ import { Button } from "@mui/material";
 
 import CommonTools from "../CommonTools";
 import WorkTree from "../WorkTree";
+import DimensionLayoutDialog from "../Dialogs/DimensionLayoutDialog";
 
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -54,6 +55,7 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 
 const Report = () => {
   const [tabValue, setTabValue] = React.useState(0);
+  const [dimensionLayoutDialog, setDimensionLayoutDialog] = React.useState(false)
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -64,6 +66,14 @@ const Report = () => {
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
+
+  const handleDimensionLayoutButtonClick = () => {
+    setDimensionLayoutDialog(true);
+  }
+
+  const handleDimensionLayoutDialogClose = () => {
+    setDimensionLayoutDialog(false);
+  }
 
   return (
     <Box>
@@ -100,7 +110,8 @@ const Report = () => {
                 </AccordionSummary>
                 <AccordionDetails>
                   <Box sx={{ p: 1 }}>
-                  <Button variant="contained">Dimension Layout</Button>
+                  <Button variant="contained" onClick={handleDimensionLayoutButtonClick}>Dimension Layout</Button>
+                  <DimensionLayoutDialog open={dimensionLayoutDialog} handleDimensionLayoutDialogClose={handleDimensionLayoutDialogClose}/>
                   </Box>
                 </AccordionDetails>
               </Accordion>
