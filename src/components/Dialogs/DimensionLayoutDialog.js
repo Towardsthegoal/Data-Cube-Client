@@ -1,4 +1,6 @@
 import * as React from "react";
+import { useSelector, useDispatch } from "react-redux";
+
 import Button from "@mui/material/Button";
 import { Box, Grid, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -10,6 +12,12 @@ import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+
+import {
+  setReportRows,
+  setReportCols,
+  setReportFilters,
+} from "../../slices/report";
 
 const CustomDialogTitle = styled(DialogTitle)(({ theme }) => ({
   display: "flex",
@@ -36,15 +44,42 @@ const initRows = [{ id: "", content: "" }];
 export default function DimensionLayoutDialog({
   open,
   handleDimensionLayoutDialogClose,
+  handleDimensionLayoutDialogOK,
 }) {
-  const [tables, setTables] = React.useState(initTables);
-  const [dimTable, setDimTable] = React.useState([])
-  const [pages, setPages] = React.useState([]);
-  const [rows, setRows] = React.useState([]);
-  const [cols, setCols] = React.useState([]);
+  const dispatch = useDispatch();
+
+  let reduxTables = useSelector((state) => state.report.reportTables);
+  let reduxDimTable = useSelector((state) => state.report.reportDimTable);
+  let reduxRows = useSelector((state) => state.report.reportRows);
+  let reduxCols = useSelector((state) => state.report.reportCols);
+  let reduxPages = useSelector((state) => state.report.reportFilters);
+
+  const [tables, setTables] = React.useState([...reduxTables]);
+  const [dimTable, setDimTable] = React.useState([...reduxDimTable]);
+  const [pages, setPages] = React.useState([...reduxPages]);
+  const [rows, setRows] = React.useState([...reduxRows]);
+  const [cols, setCols] = React.useState([...reduxCols]);
+
+  React.useEffect(() => {
+    setTables([...reduxTables]);
+  }, [reduxTables]);
+  React.useEffect(() => {
+    setDimTable([...reduxDimTable]);
+  }, [reduxDimTable]);
+  React.useEffect(() => {
+    setRows([...reduxRows]);
+  }, [reduxRows]);
+  React.useEffect(() => {
+    setCols([...reduxCols]);
+  }, [reduxCols]);
+  React.useEffect(() => {
+    setPages([...reduxPages]);
+  }, [reduxPages]);
+
+  const pivotInfo = {};
 
   const onDragEnd = (result) => {
-    console.log("onDragEnd", result);
+    // console.log("onDragEnd", result);
     if (!result.destination) return;
     const { source, destination } = result;
     let sourceItems, destinationItems, setSourceItems, setDestinationItems;
@@ -96,9 +131,13 @@ export default function DimensionLayoutDialog({
       default:
         break;
     }
+    // console.log("source, destination", sourceItems, destinationItems)
     if (source.droppableId !== destination.droppableId) {
-      const [removed] = sourceItems.splice(sourceItems.index, 1);
-      destinationItems.splice(destinationItems.index, 0, removed);
+      const [removed] = sourceItems.splice(source.index, 1);
+      // sourceItems.filter((item) => {
+      //   return item.id !== source.droppableId
+      // })
+      destinationItems.splice(destination.index, 0, removed);
       setDestinationItems(destinationItems);
       setSourceItems(sourceItems);
     } else {
@@ -147,7 +186,9 @@ export default function DimensionLayoutDialog({
             </Typography>
           </Box>
           <Box sx={{ mt: 2 }}>
-            <Typography sx={{ fontWeight: 1000 }}>Attribute Dimension</Typography>
+            <Typography sx={{ fontWeight: 1000 }}>
+              Attribute Dimension
+            </Typography>
             <Box
               sx={{
                 border: "1px solid grey",
@@ -158,7 +199,11 @@ export default function DimensionLayoutDialog({
             >
               <Droppable key={"dimTable"} droppableId={"dimTable"}>
                 {(provided) => (
-                  <Box ref={provided.innerRef} {...provided.droppableProps} sx={{minHeight:"60px"}}>
+                  <Box
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    sx={{ minHeight: "60px" }}
+                  >
                     <Box>
                       {dimTable.map((item, index) => {
                         return (
@@ -181,7 +226,7 @@ export default function DimensionLayoutDialog({
                         );
                       })}
                     </Box>
-                      {provided.placeholder}
+                    {provided.placeholder}
                   </Box>
                 )}
               </Droppable>
@@ -200,7 +245,11 @@ export default function DimensionLayoutDialog({
             >
               <Droppable key={"allTables"} droppableId={"allTables"}>
                 {(provided) => (
-                  <Box ref={provided.innerRef} {...provided.droppableProps} sx={{minHeight:"60px"}}>
+                  <Box
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    sx={{ minHeight: "60px" }}
+                  >
                     <Box sx={{ display: "flex", flexWrap: "wrap" }}>
                       {tables.map((item, index) => {
                         return (
@@ -242,7 +291,11 @@ export default function DimensionLayoutDialog({
             >
               <Droppable key={"pages"} droppableId={"pages"}>
                 {(provided) => (
-                  <Box ref={provided.innerRef} {...provided.droppableProps} sx={{minHeight:"60px"}}>
+                  <Box
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    sx={{ minHeight: "60px" }}
+                  >
                     <Box>
                       {pages.map((item, index) => {
                         return (
@@ -265,18 +318,18 @@ export default function DimensionLayoutDialog({
                         );
                       })}
                     </Box>
-                      {provided.placeholder}
-                     
-                    {console.log(provided.placeholder)}
+                    {provided.placeholder}
+
+                    {/* {console.log(provided.placeholder)} */}
                   </Box>
                 )}
               </Droppable>
             </Box>
           </Box>
           {/* <Box sx={{ display: "flex", justifyContent: "space-between" }}> */}
-          <Box sx={{display:"flex", justifyContent: "space-between"}}>
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             {/* Rows Drag and Drop */}
-            <Box sx={{ mt: 2, mr: 2, width:"100%" }}>
+            <Box sx={{ mt: 2, mr: 2, width: "100%" }}>
               <Typography sx={{ fontWeight: 1000 }}>Rows</Typography>
               <Box
                 sx={{
@@ -287,7 +340,11 @@ export default function DimensionLayoutDialog({
               >
                 <Droppable key={"rows"} droppableId={"rows"}>
                   {(provided) => (
-                    <Box ref={provided.innerRef} {...provided.droppableProps} sx={{minHeight:"60px"}}>
+                    <Box
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                      sx={{ minHeight: "60px" }}
+                    >
                       {provided.placeholder}
                       <Box>
                         {rows.map((item, index) => {
@@ -317,7 +374,7 @@ export default function DimensionLayoutDialog({
               </Box>
             </Box>
             {/* Cols Drag and Drop */}
-            <Box sx={{ mt: 2, ml: 2, width:"100%" }}>
+            <Box sx={{ mt: 2, ml: 2, width: "100%" }}>
               <Typography sx={{ fontWeight: 1000 }}>Cols</Typography>
               <Box
                 sx={{
@@ -328,7 +385,11 @@ export default function DimensionLayoutDialog({
               >
                 <Droppable key={"cols"} droppableId={"cols"}>
                   {(provided) => (
-                    <Box ref={provided.innerRef} {...provided.droppableProps} sx={{minHeight:"60px"}}>
+                    <Box
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                      sx={{ minHeight: "60px" }}
+                    >
                       {provided.placeholder}
                       <Box>
                         {cols.map((item, index) => {
@@ -359,7 +420,16 @@ export default function DimensionLayoutDialog({
           </Box>
         </DialogContent>
         <DialogActions sx={{ display: "block", padding: "4px 24px" }}>
-          <Button variant="contained" sx={{ float: "right" }}>
+          <Button
+            variant="contained"
+            sx={{ float: "right" }}
+            onClick={() => {
+              dispatch(setReportRows(rows));
+              dispatch(setReportCols(cols));
+              dispatch(setReportFilters(pages));
+              handleDimensionLayoutDialogOK();
+            }}
+          >
             OK
           </Button>
           <Button

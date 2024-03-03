@@ -114,6 +114,20 @@ export const testQuery = createAsyncThunk(
   }
 );
 
+export const pivot = createAsyncThunk(
+  "query/pivot",
+  async (pivotInfo) => {
+    try {
+      const res = await QueryService.testQuery(pivotInfo);
+      console.log("pivot res", res)
+      return res.data.res;
+    } catch (error) {
+      console.log('pivot error');
+      throw(error);
+    }
+  }
+);
+
 
 export const querySlice = createSlice({
   name: 'query',

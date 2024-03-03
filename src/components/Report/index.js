@@ -4,18 +4,42 @@ import Box from "@mui/material/Box";
 
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import { Grid } from "@mui/material";
+import {
+  Grid,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
 
 import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
 import MuiAccordion from "@mui/material/Accordion";
 import MuiAccordionSummary from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
-import { Button } from "@mui/material";
+import {
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  Avatar,
+  Divider,
+} from "@mui/material";
 
 import CommonTools from "../CommonTools";
 import WorkTree from "../WorkTree";
 import DimensionLayoutDialog from "../Dialogs/DimensionLayoutDialog";
+import DatabaseConnectDialog from "../Dialogs/DatabaseConnectDialog";
+
+import AddIcon from "@mui/icons-material/Add";
+import GridOnIcon from "@mui/icons-material/GridOn";
+
+import { pivot } from "../../slices/query";
+// import { List } from "rsuite";
+
+import PersonAdd from "@mui/icons-material/PersonAdd";
+import Settings from "@mui/icons-material/Settings";
+import Logout from "@mui/icons-material/Logout";
 
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -55,8 +79,11 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 
 const Report = () => {
   const [tabValue, setTabValue] = React.useState(0);
-  const [dimensionLayoutDialog, setDimensionLayoutDialog] = React.useState(false)
+  const [dimensionLayoutDialog, setDimensionLayoutDialog] =
+    React.useState(false);
 
+  const [databaseConnectDialog, setDatabaseConnectDialog] = React.useState(false)
+  
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
@@ -69,11 +96,34 @@ const Report = () => {
 
   const handleDimensionLayoutButtonClick = () => {
     setDimensionLayoutDialog(true);
-  }
+  };
 
   const handleDimensionLayoutDialogClose = () => {
     setDimensionLayoutDialog(false);
+  };
+
+  const handleDimensionLayoutDialogOK = () => {
+    // pivot(pivotInfo);
+    setDimensionLayoutDialog(false);
+  };
+
+  const handleDatabaseConnectDialogClose = () => {
+    setDatabaseConnectDialog(false)
   }
+
+  const handleDatabaseConnectDialogOK = () => {
+    setDatabaseConnectDialog(false)
+  }
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <Box>
@@ -91,8 +141,85 @@ const Report = () => {
         <WorkTree />
         <Box component="main" sx={{ flexGrow: 1 }}>
           <Grid container>
-            <Grid item xs={2} sx={{ p: 2 }}>
-              Header, Body, Footer
+            <Grid item xs={2} sx={{}}>
+              <List sx={{}}>
+                <ListItem
+                  sx={{ borderBottom: "1px solid grey" }}
+                  secondaryAction={
+                    <IconButton>
+                      <AddIcon />
+                    </IconButton>
+                  }
+                >
+                  <ListItemText>Header</ListItemText>
+                </ListItem>
+                <ListItem
+                  sx={{ borderBottom: "1px solid grey" }}
+                  secondaryAction={
+                    <IconButton
+                      onClick={handleClick}
+                      sx={{ ml: 2 }}
+                      aria-controls={open ? "account-menu" : undefined}
+                      aria-haspopup="true"
+                      aria-expanded={open ? "true" : undefined}
+                    >
+                      <AddIcon />
+                    </IconButton>
+                  }
+                >
+                  <Menu
+                    anchorEl={anchorEl}
+                    id="account-menu"
+                    open={open}
+                    onClose={handleClose}
+                    onClick={handleClose}
+                    PaperProps={{
+                      elevation: 0,
+                      sx: {
+                        overflow: "visible",
+                        filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                        mt: 1.5,
+                        "& .MuiAvatar-root": {
+                          width: 32,
+                          height: 32,
+                          ml: -0.5,
+                          mr: 1,
+                        },
+                        "&::before": {
+                          content: '""',
+                          display: "block",
+                          position: "absolute",
+                          top: 0,
+                          right: 14,
+                          width: 10,
+                          height: 10,
+                          bgcolor: "background.paper",
+                          transform: "translateY(-50%) rotate(45deg)",
+                          zIndex: 0,
+                        },
+                      },
+                    }}
+                    transformOrigin={{ horizontal: "right", vertical: "top" }}
+                    anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+                  >
+                    <MenuItem onClick={() => setDatabaseConnectDialog(true)}>
+                      <GridOnIcon /> Grid
+                    </MenuItem>
+                  </Menu>
+                  <ListItemText>Body</ListItemText>
+                  <DatabaseConnectDialog open={databaseConnectDialog} handleDatabaseConnectDialogClose={handleDatabaseConnectDialogClose} handleDatabaseConnectDialogOK={handleDatabaseConnectDialogOK} />
+                </ListItem>
+                <ListItem
+                  sx={{ borderBottom: "1px solid grey" }}
+                  secondaryAction={
+                    <IconButton>
+                      <AddIcon />
+                    </IconButton>
+                  }
+                >
+                  <ListItemText>Footer</ListItemText>
+                </ListItem>
+              </List>
             </Grid>
             <Grid item xs={7} sx={{ p: 2 }}>
               Grid with Drag and Drop function
@@ -110,8 +237,21 @@ const Report = () => {
                 </AccordionSummary>
                 <AccordionDetails>
                   <Box sx={{ p: 1 }}>
-                  <Button variant="contained" onClick={handleDimensionLayoutButtonClick}>Dimension Layout</Button>
-                  <DimensionLayoutDialog open={dimensionLayoutDialog} handleDimensionLayoutDialogClose={handleDimensionLayoutDialogClose}/>
+                    <Button
+                      variant="contained"
+                      onClick={handleDimensionLayoutButtonClick}
+                    >
+                      Dimension Layout
+                    </Button>
+                    <DimensionLayoutDialog
+                      open={dimensionLayoutDialog}
+                      handleDimensionLayoutDialogClose={
+                        handleDimensionLayoutDialogClose
+                      }
+                      handleDimensionLayoutDialogOK={
+                        handleDimensionLayoutDialogOK
+                      }
+                    />
                   </Box>
                 </AccordionDetails>
               </Accordion>
