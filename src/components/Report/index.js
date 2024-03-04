@@ -320,8 +320,15 @@ const Report = () => {
                       <TableRow>
                         <TableCell />
                         <TableCell />
-                        {}
-                        {rows.map((row, index) => {
+                        {/* {rows.map((row, index) => {
+                          // console.log(row);
+                          return (
+                            <TableCell align="right">
+                              {String.fromCharCode(65 + index)}
+                            </TableCell>
+                          );
+                        })} */}
+                        {cols.map((col, index) => {
                           // console.log(row);
                           return (
                             <TableCell align="right">
@@ -338,7 +345,7 @@ const Report = () => {
                       <TableRow>
                         <TableCell />
                         <TableCell />
-                        {rows.map((row) => {
+                        {/* {rows.map((row) => {
                           return (
                             <TableCell align="right">
                               <Button
@@ -352,12 +359,27 @@ const Report = () => {
                               </Button>
                             </TableCell>
                           );
+                        })} */}
+                        {cols.map((col) => {
+                          return (
+                            <TableCell align="right">
+                              <Button
+                                value={col.id}
+                                onClick={(e) => {
+                                  setKind("cols");
+                                  setSelectedTable(e.target.value);
+                                }}
+                              >
+                                {col.content}
+                              </Button>
+                            </TableCell>
+                          );
                         })}
                         <TableCell />
                       </TableRow>
                       </TableHead>
                       <TableBody>
-                      {cols.map((col, index) => {
+                      {/* {cols.map((col, index) => {
                         return (
                           <TableRow>
                             <TableCell>{index + 1}</TableCell>
@@ -371,6 +393,29 @@ const Report = () => {
                                 }}
                               >
                                 {col.content}
+                              </Button>
+                            </TableCell>
+                            {rows.map((row, index) => {
+                              return <TableCell align="right">#</TableCell>;
+                            })}
+                            <TableCell />
+                          </TableRow>
+                        );
+                      })} */}
+                      {rows.map((row, index) => {
+                        return (
+                          <TableRow>
+                            <TableCell>{index + 1}</TableCell>
+                            <TableCell align="right">
+                              <Button
+                                value={row.id}
+                                onClick={(e) => {
+                                  // console.log("cell button clicked", e.target.value)
+                                  setKind("rows")
+                                  setSelectedTable(e.target.value);
+                                }}
+                              >
+                                {row.content}
                               </Button>
                             </TableCell>
                             {rows.map((row, index) => {
