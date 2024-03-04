@@ -16,14 +16,24 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
 import PrintIcon from "@mui/icons-material/Print";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { useSelector, useDispatch } from "react-redux";
+import { pivot } from "../../slices/report";
 
 const CommonToolsItem = (props) => {
+  const dispatch = useDispatch();
+
+  const pivotInfo = useSelector(state => state.report.reportPivotInfo);
+  const { rows, cols } = pivotInfo;
+  const filters = pivotInfo.pages;
+  console.log("CommonToolsItem pivotInfo input test", pivotInfo)
+
+  
   let iconToRender;
   let itemText = (
     <ListItemText
       primary={props.text}
       primaryTypographyProps={{ fontSize: "0.7rem" }}
-      sx={{ justifyContent: "center", whiteSpace:"nowrap" }}
+      sx={{ justifyContent: "center", whiteSpace: "nowrap" }}
     />
   );
 
@@ -77,15 +87,31 @@ const CommonToolsItem = (props) => {
                   padding: 0,
                   fontWeight: 400,
                   textTransform: "none",
-                  whiteSpace:"nowrap"
+                  whiteSpace: "nowrap",
                 }}
                 endIcon={<ArrowDropDownIcon />}
               >
                 Save As
               </Button>
               <Menu {...bindMenu(popupState)}>
-                <MenuItem onClick={popupState.close}>PDF</MenuItem>
-                <MenuItem onClick={popupState.close}>Excel</MenuItem>
+                <MenuItem onClick={popupState.close}>
+                  <Button
+                    onClick={() => {
+                      dispatch(pivot({rows, cols, filters: filters}));
+                    }}
+                  >
+                    PDF
+                  </Button>
+                </MenuItem>
+                <MenuItem onClick={popupState.close}>
+                  <Button
+                    onClick={() => {
+                      dispatch(pivot({rows, cols, filters: filters}));
+                    }}
+                  >
+                    Excel
+                  </Button>
+                </MenuItem>
               </Menu>
             </React.Fragment>
           )}

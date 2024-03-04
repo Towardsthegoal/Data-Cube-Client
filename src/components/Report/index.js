@@ -1,16 +1,25 @@
 import * as React from "react";
 import { styled } from "@mui/material/styles";
-import Box from "@mui/material/Box";
+import { useSelector, useDispatch } from "react-redux";
 
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
 import {
+  Box,
+  Tab,
+  Tabs,
   Grid,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
+
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 
 import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
 import MuiAccordion from "@mui/material/Accordion";
@@ -30,6 +39,7 @@ import CommonTools from "../CommonTools";
 import WorkTree from "../WorkTree";
 import DimensionLayoutDialog from "../Dialogs/DimensionLayoutDialog";
 import DatabaseConnectDialog from "../Dialogs/DatabaseConnectDialog";
+import SelectMembersDialog from "../Dialogs/SelectMembersDialog";
 
 import AddIcon from "@mui/icons-material/Add";
 import GridOnIcon from "@mui/icons-material/GridOn";
@@ -40,6 +50,7 @@ import { pivot } from "../../slices/query";
 import PersonAdd from "@mui/icons-material/PersonAdd";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
+import { getTableData } from "../../slices/report";
 
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -78,12 +89,34 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 }));
 
 const Report = () => {
+  const dispatch = useDispatch();
+
   const [tabValue, setTabValue] = React.useState(0);
   const [dimensionLayoutDialog, setDimensionLayoutDialog] =
     React.useState(false);
 
-  const [databaseConnectDialog, setDatabaseConnectDialog] = React.useState(false)
-  
+  const [databaseConnectDialog, setDatabaseConnectDialog] =
+    React.useState(false);
+  const [selectMembersDialog, setSelectMembersDialog] = React.useState(false);
+  const [selectedTable, setSelectedTable] = React.useState("");
+  const [kind, setKind] = React.useState("pages");
+  // const [rows, setRows] = React.useState(useSelector((state) => state.report.reportRows));
+  // const [rows, setRows] = React.useState([]);
+  // const reduxRows = useSelector((state) => state.report.reportRows);
+
+  const rows = useSelector((state) => state.report.reportRows);
+  const cols = useSelector((state) => state.report.reportCols);
+  const pages = useSelector((state) => state.report.reportPages);
+  // console.log("row is from Redux", rows);
+  // console.log("col is from Redux", cols);
+  // console.log("page is from Redux", pages);
+
+  React.useEffect(() => {
+    if (pages.length > 0) {
+      setSelectedTable(pages[0].id);
+    }
+  }, [pages]);
+
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
@@ -103,17 +136,24 @@ const Report = () => {
   };
 
   const handleDimensionLayoutDialogOK = () => {
-    // pivot(pivotInfo);
     setDimensionLayoutDialog(false);
   };
 
   const handleDatabaseConnectDialogClose = () => {
-    setDatabaseConnectDialog(false)
-  }
+    setDatabaseConnectDialog(false);
+  };
 
   const handleDatabaseConnectDialogOK = () => {
-    setDatabaseConnectDialog(false)
-  }
+    setDatabaseConnectDialog(false);
+  };
+
+  const handleSelectMembersDialogClose = () => {
+    setSelectMembersDialog(false);
+  };
+
+  const handleSelectMembersDialogOK = () => {
+    setSelectMembersDialog(false);
+  };
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -207,7 +247,24 @@ const Report = () => {
                     </MenuItem>
                   </Menu>
                   <ListItemText>Body</ListItemText>
-                  <DatabaseConnectDialog open={databaseConnectDialog} handleDatabaseConnectDialogClose={handleDatabaseConnectDialogClose} handleDatabaseConnectDialogOK={handleDatabaseConnectDialogOK} />
+                  <DatabaseConnectDialog
+                    open={databaseConnectDialog}
+                    handleDatabaseConnectDialogClose={
+                      handleDatabaseConnectDialogClose
+                    }
+                    handleDatabaseConnectDialogOK={
+                      handleDatabaseConnectDialogOK
+                    }
+                  />
+                  <SelectMembersDialog
+                    open={selectMembersDialog}
+                    kind={kind}
+                    table={selectedTable}
+                    handleSelectMembersDialogClose={
+                      handleSelectMembersDialogClose
+                    }
+                    handleSelectMembersDialogOK={handleSelectMembersDialogOK}
+                  />
                 </ListItem>
                 <ListItem
                   sx={{ borderBottom: "1px solid grey" }}
@@ -222,7 +279,125 @@ const Report = () => {
               </List>
             </Grid>
             <Grid item xs={7} sx={{ p: 2 }}>
-              Grid with Drag and Drop function
+              {pages.length ? (
+                <Box>
+                  <Button
+                    variant="contained"
+                    value={selectedTable}
+                    onClick={(e) => {
+                      dispatch(getTableData(e.target.value));
+                      setSelectMembersDialog(true);
+                    }}
+                  >
+                    {selectedTable}
+                  </Button>
+                </Box>
+              ) : (
+                <></>
+              )}
+              {pages.length ? (
+                <Box sx={{mt: 2}}>
+                  <label>Pages: </label>
+                  <Button
+                    variant="contained"
+                    value={pages[0].id}
+                    onClick={(e) => {
+                      dispatch(getTableData(e.target.value));
+                      setSelectMembersDialog(true);
+                    }}
+                  >
+                    {pages[0].content}
+                  </Button>
+                </Box>
+              ) : (
+                <></>
+              )}
+              {/* Grid with Drag and Drop function */}
+              {rows.length && cols.length ? (
+                <TableContainer>
+                  <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell />
+                        <TableCell />
+                        {}
+                        {rows.map((row, index) => {
+                          // console.log(row);
+                          return (
+                            <TableCell align="right">
+                              {String.fromCharCode(65 + index)}
+                            </TableCell>
+                          );
+                        })}
+                        <TableCell align="center" width={1}>
+                          <IconButton>
+                            <AddIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell />
+                        <TableCell />
+                        {rows.map((row) => {
+                          return (
+                            <TableCell align="right">
+                              <Button
+                                value={row.id}
+                                onClick={(e) => {
+                                  setKind("rows");
+                                  setSelectedTable(e.target.value);
+                                }}
+                              >
+                                {row.content}
+                              </Button>
+                            </TableCell>
+                          );
+                        })}
+                        <TableCell />
+                      </TableRow>
+                      </TableHead>
+                      <TableBody>
+                      {cols.map((col, index) => {
+                        return (
+                          <TableRow>
+                            <TableCell>{index + 1}</TableCell>
+                            <TableCell align="right">
+                              <Button
+                                value={col.id}
+                                onClick={(e) => {
+                                  // console.log("cell button clicked", e.target.value)
+                                  setKind("cols")
+                                  setSelectedTable(e.target.value);
+                                }}
+                              >
+                                {col.content}
+                              </Button>
+                            </TableCell>
+                            {rows.map((row, index) => {
+                              return <TableCell align="right">#</TableCell>;
+                            })}
+                            <TableCell />
+                          </TableRow>
+                        );
+                      })}
+                      <TableRow>
+                        <TableCell align="right" width={1}>
+                          <IconButton>
+                            <AddIcon/>
+                          </IconButton>
+                        </TableCell>
+                        <TableCell />
+                        <TableCell/>
+                        {rows.map(() => {
+                          return <TableCell />
+                        })}
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              ) : (
+                <></>
+              )}
             </Grid>
             <Grid item xs={3}>
               <Accordion

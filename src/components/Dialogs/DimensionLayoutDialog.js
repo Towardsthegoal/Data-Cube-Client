@@ -16,7 +16,9 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import {
   setReportRows,
   setReportCols,
-  setReportFilters,
+  setReportPages,
+  setReportDimTable,
+  setReportPivotInfo
 } from "../../slices/report";
 
 const CustomDialogTitle = styled(DialogTitle)(({ theme }) => ({
@@ -52,7 +54,7 @@ export default function DimensionLayoutDialog({
   let reduxDimTable = useSelector((state) => state.report.reportDimTable);
   let reduxRows = useSelector((state) => state.report.reportRows);
   let reduxCols = useSelector((state) => state.report.reportCols);
-  let reduxPages = useSelector((state) => state.report.reportFilters);
+  let reduxPages = useSelector((state) => state.report.reportPages);
 
   const [tables, setTables] = React.useState([...reduxTables]);
   const [dimTable, setDimTable] = React.useState([...reduxDimTable]);
@@ -424,9 +426,11 @@ export default function DimensionLayoutDialog({
             variant="contained"
             sx={{ float: "right" }}
             onClick={() => {
+              // dispatch(setReportPivotInfo({factTable:dimTable}));
+              dispatch(setReportDimTable(dimTable));
               dispatch(setReportRows(rows));
               dispatch(setReportCols(cols));
-              dispatch(setReportFilters(pages));
+              dispatch(setReportPages(pages));
               handleDimensionLayoutDialogOK();
             }}
           >
